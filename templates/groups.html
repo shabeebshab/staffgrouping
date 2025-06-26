@@ -1,171 +1,171 @@
-<div class="groups-container">
-  <h2 class="groups-header">Grouped Staff</h2>
-  
-  {% for group in groups %}
-  <div class="group-card">
-    <h3 class="group-title">Group {{ forloop.counter }}</h3>
-    
-    <div class="table-responsive">
-      <table class="group-table">
-        <thead>
-          <tr>
-            <th>SL</th>
-            <th>Name</th>
-            <th>Paid</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for member in group %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ member.name }}</td>
-            <td>₹{{ member.paid }}</td>
-            <td class="category-cell" ondblclick="markLeader(this)">{{ member.category }}</td>
-          </tr>
-          {% endfor %}
-          <tr class="total-row">
-            <td colspan="2"></td>
-            <td class="group-total">₹{{ group.0.group_total }}</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {% endfor %}
-  
-  <button class="back-btn" onclick="history.back()">⬅ Back</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grouped Staff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
 
-<style>
-  .groups-container {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  .groups-header {
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
-
-  .group-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 25px;
-  }
-
-  .group-title {
-    color: #3498db;
-    margin-top: 0;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #f0f0f0;
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-    margin-bottom: 15px;
-  }
-
-  .group-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-  }
-
-  .group-table th {
-    background-color: #3498db;
-    color: white;
-    padding: 12px;
-    text-align: left;
-  }
-
-  .group-table td {
-    padding: 12px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  .group-table tr:nth-child(even) {
-    background-color: #f8f9fa;
-  }
-
-  .group-table tr:hover {
-    background-color: #e8f4fc;
-  }
-
-  .category-cell {
-    cursor: pointer;
-    text-align: center;
-  }
-
-  .total-row {
-    background-color: #f8f9fa !important;
-  }
-
-  .group-total {
-    font-weight: 600;
-    color: #27ae60;
-    text-align: center;
-    padding-right: 20px;
-  }
-
-  .back-btn {
-    display: block;
-    margin: 20px auto 0;
-    padding: 12px 24px;
-    background-color: #95a5a6;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 120px;
-    text-align: center;
-  }
-
-  .back-btn:hover {
-    background-color: #7f8c8d;
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
     .groups-container {
-      padding: 15px;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
     }
-    
-    .group-card {
-      padding: 15px;
-    }
-    
-    .group-table th, 
-    .group-table td {
-      padding: 8px;
-      font-size: 14px;
-    }
-    
-    .group-total {
-      padding-right: 10px;
-    }
-  }
-</style>
 
-<script>
-  function markLeader(btn) {
-    const rows = btn.closest('table').querySelectorAll('tr');
-    rows.forEach(row => {
-      row.style.backgroundColor = '';
-    });
-    
-    const selectedRow = btn.closest('tr');
-    selectedRow.style.backgroundColor = '#e3f2fd';
-  }
-</script>
+    .groups-header {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .group-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 10px; /* reduced spacing */
+    }
+
+    .group-title {
+      color: #3498db;
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+      font-size: 20px;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+
+    .group-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      min-width: 400px;
+    }
+
+    .group-table th {
+      background-color: #3498db;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .group-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .group-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .group-table tr:hover {
+      background-color: #e8f4fc;
+    }
+
+    .category-cell {
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .total-row {
+      background-color: #f8f9fa !important;
+    }
+
+    .group-total {
+      font-weight: 600;
+      color: #27ae60;
+      text-align: center;
+      padding-right: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .groups-container {
+        padding: 15px;
+      }
+
+      .group-card {
+        padding: 15px;
+      }
+
+      .group-table th,
+      .group-table td {
+        padding: 8px;
+        font-size: 14px;
+      }
+
+      .group-total {
+        padding-right: 10px;
+      }
+
+      .group-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="groups-container">
+    <h2 class="groups-header">Grouped Staff</h2>
+
+    {% for group in groups %}
+    <div class="group-card">
+      <h3 class="group-title">Group {{ forloop.counter }}</h3>
+
+      <div class="table-responsive">
+        <table class="group-table">
+          <thead>
+            <tr>
+              <th>SL</th>
+              <th>Name</th>
+              <th>Paid</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for member in group %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ member.name }}</td>
+              <td>₹{{ member.paid }}</td>
+              <td class="category-cell" onclick="markLeader(this)" ondblclick="markLeader(this)">{{ member.category }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+              <td colspan="2"></td>
+              <td class="group-total">₹{{ group.0.group_total }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    function markLeader(cell) {
+  const table = cell.closest('table');
+  const rows = table.querySelectorAll('tbody tr');
+
+  rows.forEach(row => row.style.backgroundColor = '');
+
+  cell.closest('tr').style.backgroundColor = '#e6f9ec';
+}
+  </script>
+</body>
+</html>
