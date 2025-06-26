@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: staff-grouper
+    env: python
+    workingDir: staffgrouper
+    buildCommand: pip install -r ../requirements.txt
+    startCommand: gunicorn staffgrouper.wsgi:application

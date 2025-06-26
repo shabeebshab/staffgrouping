@@ -1,0 +1,193 @@
+<div class="staff-container">
+  <h2 class="staff-header">Total Staff</h2>
+  
+  <form method="get" action="{% url 'groups' %}" class="group-form">
+    <div class="form-group">
+      <label class="form-label">Group Size:</label>
+      <select name="size" class="form-select">
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+    <button type="submit" class="submit-btn">Split into Groups</button>
+  </form>
+  
+  <div class="total-paid">
+    <strong>Total Paid: ₹{{ total_paid }}</strong>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="staff-table">
+      <thead>
+        <tr>
+          <th>SL No</th>
+          <th>Name</th>
+          <th>Paid</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in staff %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ member.name }}</td>
+          <td>₹{{ member.paid }}</td>
+          <td>{{ member.category }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .staff-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .staff-header {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+  }
+
+  .group-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 25px;
+  }
+
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #34495e;
+  }
+
+  .form-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+  }
+
+  .form-select:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  }
+
+  .submit-btn {
+    padding: 12px 24px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .submit-btn:hover {
+    background-color: #219653;
+    transform: translateY(-2px);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .total-paid {
+    text-align: right;
+    font-size: 18px;
+    color: #27ae60;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  .staff-table th {
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .staff-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .staff-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+
+  .staff-table tr:hover {
+    background-color: #e8f4fc;
+  }
+
+  @media (max-width: 768px) {
+    .staff-container {
+      padding: 15px;
+    }
+    
+    .group-form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .submit-btn {
+      width: 100%;
+    }
+    
+    .staff-table th, 
+    .staff-table td {
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    .total-paid {
+      font-size: 16px;
+      text-align: center;
+    }
+  }
+</style>
