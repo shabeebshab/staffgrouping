@@ -143,7 +143,7 @@
             {% for member in group %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td ondblclick="markLeader(this)">{{ member.name }}</td>
+              <td onclick="markLeader(this)">{{ member.name }}</td>
               <td>₹{{ member.paid }}</td>
               <td>{{ member.category }}</td>
             </tr>
