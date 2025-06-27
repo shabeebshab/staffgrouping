@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Print - Grouped Staff</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: white;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+      color: #000;
+    }
+
+    .groups-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .group-row {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    .group-block {
+      flex: 1;
+      min-width: 50%;
+      padding: 4px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+    }
+
+    .group-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .member-line {
+      margin-bottom: 2px;
+    }
+
+    .group-total {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .leader {
+         background-color: #d0ebff;
+         padding: 2px 4px;
+         border-radius: 4px;
+        display: inline-block;
+      }
+  </style>
+</head>
+<body>
+
+  <div class="groups-container">
+    {% for group in groups %}
+      {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="group-row">
+      {% endif %}
+
+      <div class="group-block" data-group="{{ forloop.counter0 }}">
+        <div class="group-title">Group {{ forloop.counter }}</div>
+
+        {% for member in group %}
+        <div class="member-line" data-name="{{ member.name }}">
+          {{ forloop.counter }}. <span class="member-name">{{ member.name }}</span>: ₹{{ member.paid }}
+        </div>
+        {% endfor %}
+
+        <div class="group-total">Total paid : ₹{{ group.0.group_total }}</div>
+      </div>
+
+      {% if forloop.counter0|add:"1"|divisibleby:2 or forloop.last %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const leaders = JSON.parse(localStorage.getItem('groupLeaders') || '{}');
+
+  document.querySelectorAll('.group-block').forEach(groupBlock => {
+    const groupIndex = groupBlock.dataset.group;
+    const leaderName = leaders[groupIndex];
+
+    if (leaderName) {
+      groupBlock.querySelectorAll('.member-line').forEach(line => {
+        if (line.dataset.name.trim() === leaderName.trim()) {
+          const nameSpan = line.querySelector('.member-name');
+          if (nameSpan) {
+            nameSpan.classList.add('leader');
+          }
+        }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

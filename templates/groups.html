@@ -19,26 +19,17 @@
       padding: 20px;
     }
 
-    .groups-header {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 25px;
-      font-weight: 600;
-      font-size: 24px;
-    }
-
     .group-card {
       background: #ffffff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      margin-bottom: 10px; /* reduced spacing */
+      margin-bottom: 10px;
     }
 
     .group-title {
       color: #3498db;
-      margin-top: 0;
-      margin-bottom: 15px;
+      margin: 0 0 15px;
       padding-bottom: 10px;
       border-bottom: 2px solid #f0f0f0;
       font-size: 20px;
@@ -70,16 +61,7 @@
     }
 
     .group-table tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-
-    .group-table tr:hover {
-      background-color: #e8f4fc;
-    }
-
-    .category-cell {
-      cursor: pointer;
-      text-align: center;
+      background-color: #eef2f5;
     }
 
     .total-row {
@@ -91,6 +73,23 @@
       color: #27ae60;
       text-align: center;
       padding-right: 20px;
+    }
+
+    .leader-row {
+      background-color: #d0ebff !important;
+    }
+
+    .print-btn {
+      background-color: #d9fdd3;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      color: #000;
+      text-decoration: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 15px;
     }
 
     @media (max-width: 768px) {
@@ -120,14 +119,18 @@
 </head>
 <body>
   <div class="groups-container">
-    <h2 class="groups-header">Grouped Staff</h2>
+
+    <!-- ✅ Print button aligned right -->
+    <div style="text-align: right;">
+      <a href="?print=1&size={{ request.GET.size|default:8 }}" class="print-btn">📄 Print View</a>
+    </div>
 
     {% for group in groups %}
     <div class="group-card">
       <h3 class="group-title">Group {{ forloop.counter }}</h3>
 
       <div class="table-responsive">
-        <table class="group-table">
+        <table class="group-table" data-group-index="{{ forloop.counter0 }}">
           <thead>
             <tr>
               <th>SL</th>
@@ -140,9 +143,9 @@
             {% for member in group %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ member.name }}</td>
+              <td ondblclick="markLeader(this)">{{ member.name }}</td>
               <td>₹{{ member.paid }}</td>
-              <td class="category-cell" onclick="markLeader(this)" ondblclick="markLeader(this)">{{ member.category }}</td>
+              <td>{{ member.category }}</td>
             </tr>
             {% endfor %}
             <tr class="total-row">
@@ -158,14 +161,36 @@
   </div>
 
   <script>
+    // Mark leader on double-click
     function markLeader(cell) {
-  const table = cell.closest('table');
-  const rows = table.querySelectorAll('tbody tr');
+      const row = cell.closest('tr');
+      const table = cell.closest('table');
+      const groupIndex = table.dataset.groupIndex;
+      const leaderName = row.cells[1].innerText.trim();
 
-  rows.forEach(row => row.style.backgroundColor = '');
+      const leaders = JSON.parse(localStorage.getItem('groupLeaders') || '{}');
+      leaders[groupIndex] = leaderName;
+      localStorage.setItem('groupLeaders', JSON.stringify(leaders));
 
-  cell.closest('tr').style.backgroundColor = '#e6f9ec';
-}
+      table.querySelectorAll('tbody tr').forEach(r => r.classList.remove('leader-row'));
+      row.classList.add('leader-row');
+    }
+
+    // Restore leader highlights from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const leaders = JSON.parse(localStorage.getItem('groupLeaders') || '{}');
+      document.querySelectorAll('.group-table').forEach(table => {
+        const groupIndex = table.dataset.groupIndex;
+        const leaderName = leaders[groupIndex];
+        if (!leaderName) return;
+
+        table.querySelectorAll('tbody tr').forEach(row => {
+          if (row.cells[1] && row.cells[1].innerText.trim() === leaderName) {
+            row.classList.add('leader-row');
+          }
+        });
+      });
+    });
   </script>
 </body>
 </html>

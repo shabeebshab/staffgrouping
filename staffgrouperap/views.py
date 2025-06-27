@@ -63,16 +63,17 @@ def paste_view(request):
 
 def group_view(request):
     import json
-    staff = json.loads(request.session.get('staff_data', '[]'))  # convert back from JSON
-    group_size = int(request.GET.get('size', 8))
+    staff = json.loads(request.session.get('staff_data', '[]'))
+    group_size = int(request.GET.get('size', 10))
 
-    # Split staff fairly
+    # Split staff into main and others
     main_boys = [s for s in staff if 'main' in s['category'].lower()]
     others = [s for s in staff if 'main' not in s['category'].lower()]
 
     total_groups = max(1, (len(staff) + group_size - 1) // group_size)
     groups = [[] for _ in range(total_groups)]
 
+    # Distribute staff members fairly into groups
     for idx, person in enumerate(main_boys + others):
         groups[idx % total_groups].append(person)
 
@@ -82,4 +83,9 @@ def group_view(request):
         for member in group:
             member['group_total'] = group_total
 
-    return render(request, 'groups.html', {'groups': groups})
+    # Choose template based on URL parameter
+    template = 'print.html' if request.GET.get('print') == '1' else 'groups.html'
+    return render(request, template, {'groups': groups})
+
+
+
