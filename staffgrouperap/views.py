@@ -27,12 +27,15 @@ def extract_data(raw_text):
 
         if paid_match:
             paid = float(paid_match.group(1))
-            total_paid += paid
         else:
             paid = 0.0
 
-        
+        # ✅ Skip if paid is 0
+        if paid == 0.0:
+            i += 3
+            continue
 
+        total_paid += paid
         category = category_match.group(1).strip() if category_match else "Unknown"
 
         staff.append({
@@ -66,14 +69,22 @@ def group_view(request):
     staff = json.loads(request.session.get('staff_data', '[]'))
     group_size = int(request.GET.get('size', 10))
 
-    # Split staff into main and others
-    main_boys = [s for s in staff if 'main' in s['category'].lower()]
-    others = [s for s in staff if 'main' not in s['category'].lower()]
+    # Separate special roles
+    special_roles = ['supervisor', 'captain', 'vice captain']
+    special_group = [s for s in staff if any(role in s['category'].lower() for role in special_roles)]
 
-    total_groups = max(1, (len(staff) + group_size - 1) // group_size)
+    # Remaining staff
+    normal_staff = [s for s in staff if s not in special_group]
+
+    # Split normal staff into main and others
+    main_boys = [s for s in normal_staff if 'main' in s['category'].lower()]
+    others = [s for s in normal_staff if 'main' not in s['category'].lower()]
+
+    # Calculate number of groups for normal staff
+    total_groups = max(1, (len(normal_staff) + group_size - 1) // group_size)
     groups = [[] for _ in range(total_groups)]
 
-    # Distribute staff members fairly into groups
+    # Distribute normal staff into groups
     for idx, person in enumerate(main_boys + others):
         groups[idx % total_groups].append(person)
 
@@ -83,9 +94,13 @@ def group_view(request):
         for member in group:
             member['group_total'] = group_total
 
-    # Choose template based on URL parameter
+    # Add special group separately
+    if special_group:
+        special_total = sum(float(p['paid']) for p in special_group)
+        for member in special_group:
+            member['group_total'] = special_total
+        groups.append(special_group)  # last group = special group
+
+    # Choose template
     template = 'print.html' if request.GET.get('print') == '1' else 'groups.html'
     return render(request, template, {'groups': groups})
-
-
-

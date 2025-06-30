@@ -48,11 +48,28 @@
     }
 
     .leader {
-         background-color: #d0ebff;
-         padding: 2px 4px;
-         border-radius: 4px;
-        display: inline-block;
-      }
+      background-color: #d0ebff;
+      padding: 2px 4px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .group-phone-input {
+      margin-top: 5px;
+    }
+
+    .group-phone-input input {
+      width: 150px;
+      font-size: 13px;
+    }
+
+    .group-phone-input button {
+      font-size: 13px;
+    }
+
+    .group-save-status {
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -72,7 +89,16 @@
         </div>
         {% endfor %}
 
-        <div class="group-total">Total paid : ₹{{ group.0.group_total }}</div>
+        <div class="group-total">
+          Total paid : ₹{{ group.0.group_total }}
+          <button onclick="toggleGroupPhone(this)">▼</button>
+
+          <div class="group-phone-input" style="display: none;">
+            <input type="tel" placeholder="Group phone number" class="group-phone-box">
+            <button onclick="saveGroupPhone(this)">Save</button>
+            <span class="group-save-status" style="margin-left: 5px; color: green;"></span>
+          </div>
+        </div>
       </div>
 
       {% if forloop.counter0|add:"1"|divisibleby:2 or forloop.last %}
@@ -82,26 +108,57 @@
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-  const leaders = JSON.parse(localStorage.getItem('groupLeaders') || '{}');
+    function toggleGroupPhone(button) {
+      const container = button.closest('.group-block');
+      const phoneBox = container.querySelector('.group-phone-input');
+      phoneBox.style.display = phoneBox.style.display === 'none' ? 'block' : 'none';
 
-  document.querySelectorAll('.group-block').forEach(groupBlock => {
-    const groupIndex = groupBlock.dataset.group;
-    const leaderName = leaders[groupIndex];
+      const groupIndex = container.dataset.group;
+      const saved = localStorage.getItem(`groupPhone_${groupIndex}`);
+      if (saved) {
+        phoneBox.querySelector('.group-phone-box').value = saved;
+      }
+    }
 
-    if (leaderName) {
-      groupBlock.querySelectorAll('.member-line').forEach(line => {
-        if (line.dataset.name.trim() === leaderName.trim()) {
-          const nameSpan = line.querySelector('.member-name');
-          if (nameSpan) {
-            nameSpan.classList.add('leader');
-          }
+    function saveGroupPhone(saveBtn) {
+      const container = saveBtn.closest('.group-block');
+      const groupIndex = container.dataset.group;
+
+      const inputBox = container.querySelector('.group-phone-box');
+      const statusSpan = container.querySelector('.group-save-status');
+      const phone = inputBox.value.trim();
+
+      if (phone) {
+        localStorage.setItem(`groupPhone_${groupIndex}`, phone);
+        statusSpan.textContent = 'Saved!';
+        statusSpan.style.color = 'green';
+      } else {
+        statusSpan.textContent = 'Enter a valid number';
+        statusSpan.style.color = 'red';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const leaders = JSON.parse(localStorage.getItem('groupLeaders') || '{}');
+
+      document.querySelectorAll('.group-block').forEach(groupBlock => {
+        const groupIndex = groupBlock.dataset.group;
+        const leaderName = leaders[groupIndex];
+
+        if (leaderName) {
+          groupBlock.querySelectorAll('.member-line').forEach(line => {
+            if (line.dataset.name.trim() === leaderName.trim()) {
+              const nameSpan = line.querySelector('.member-name');
+              if (nameSpan) {
+                nameSpan.classList.add('leader');
+              }
+            }
+          });
         }
       });
-    }
-  });
-});
-</script>
+    });
+  </script>
 
 </body>
 </html>
+
