@@ -104,3 +104,24 @@ def group_view(request):
     # Choose template
     template = 'print.html' if request.GET.get('print') == '1' else 'groups.html'
     return render(request, template, {'groups': groups})
+
+from django.shortcuts import redirect
+import json
+
+def remove_staff(request, member_id):
+    if request.method == "POST":
+        staff = json.loads(request.session.get('staff_data', '[]'))
+
+        # Remove the member by index (member_id is forloop.counter - 1)
+        if 0 <= member_id - 1 < len(staff):
+            del staff[member_id - 1]
+
+        # Update total paid after deletion
+        total_paid = sum(item['paid'] for item in staff)
+
+        # Update session
+        request.session['staff_data'] = json.dumps(staff)
+        request.session['total_paid'] = total_paid
+
+    return render(request, 'preview.html', {'staff': staff, 'total_paid': total_paid})
+

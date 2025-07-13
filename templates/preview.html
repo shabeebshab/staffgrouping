@@ -159,6 +159,13 @@
         font-size: 16px;
         text-align: center;
       }
+      .delete-btn {
+        background-color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
     }
   </style>
 </head>
@@ -195,6 +202,7 @@
             <th>Name</th>
             <th>Paid</th>
             <th>Category</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -204,6 +212,11 @@
             <td>{{ member.name }}</td>
             <td>₹{{ member.paid }}</td>
             <td>{{ member.category }}</td>
+            <td><form method="post" action="{% url 'remove_staff' forloop.counter %}" >
+              {% csrf_token %}
+              <button type="submit" class=delete-btn>❌</button>
+      </form>
+    </td>
           </tr>
           {% endfor %}
         </tbody>
