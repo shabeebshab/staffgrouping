@@ -101,9 +101,12 @@ def group_view(request):
             member['group_total'] = special_total
         groups.append(special_group)  # last group = special group
 
+     # ✅ Calculate grand total
+    total_paid = sum(float(p['paid']) for p in staff)
+
     # Choose template
     template = 'print.html' if request.GET.get('print') == '1' else 'groups.html'
-    return render(request, template, {'groups': groups})
+    return render(request, template, {'groups': groups,'total_paid': total_paid})
 
 from django.shortcuts import redirect
 import json
